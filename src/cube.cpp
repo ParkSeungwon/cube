@@ -1,31 +1,24 @@
 #include<iostream>
+#include<random>
 #include"cube.h"
 using namespace std;
 
-ostream& operator<<(ostream& o, const int r[6][3][3]) 
+int main(int ac, char** v) 
 {
-	for(int j=0; j<3; j++) {
-		cout << "   ";
-		for(int i=0; i<3; i++) cout << r[0][j][i];
-		cout << endl;
+	uniform_int_distribution<> di{1,6};
+	random_device rd;
+	Cube c;
+	cout << c;
+	//c.spin(atoi(v[1]));
+	for(int i=0; i<10; i++)  {
+		int n = di(rd);
+		c.spin(n);
+		cout << "회전 : " << n << endl << c;
 	}
 
-	for(int k=0; k<3; k++) {
-		 for(int j=1; j<5; j++) for(int i=0; i<3; i++) cout << r[j][k][i];
-		cout << endl;
+	while(!c.any_face()) {
+		int n = di(rd);
+		c.spin(n);
+		cout << "회전 : " << n << endl << c;
 	}
-
-	for(int j=0; j<3; j++) {
-		cout << "   ";
-		for(int i=0; i<3; i++) cout << r[5][j][i];
-		cout << endl;
-	}
-}
-int face[6][3][3];
-
-int main() 
-{
-	for(int i=1; i<7; i++) for(int j=0; j<3; j++) for(int k=0; k<3; k++) 
-		face[i-1][j][k] = i;
-	cout << face;
 }
