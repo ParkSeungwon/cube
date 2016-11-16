@@ -16,9 +16,10 @@ int main(int ac, char** v)
 		cout << "회전 : " << n << endl << c;
 	}
 
-	while(!c.any_face()) {
+	c.ai();
+/*	while(!c.any_face()) {
 		int n = di(rd);
 		c.spin(n);
 		cout << "회전 : " << n << endl << c;
-	}
+	}*/
 }

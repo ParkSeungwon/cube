@@ -1,5 +1,5 @@
 #include<iostream>
-
+#include<stack>
 class Cube {
 public:
 	Cube();
@@ -8,8 +8,17 @@ public:
 	bool is_made();
 	bool one_face(int f);
 	bool any_face();
+	void ai();
+
+protected:
+	bool first_line(int f);
+	bool second_line(int f);
 	
 private:
+	std::stack<int> trail;
+	std::stack<int> direc;
+	int save_point;
+	void random_spin();
 };
 
 std::ostream& operator<<(std::ostream& o, const Cube& r);

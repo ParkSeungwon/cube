@@ -1,3 +1,4 @@
+#include<random>
 #include"cube.h"
 using namespace std;
 
@@ -77,11 +78,87 @@ bool Cube::one_face(int f)
 
 bool Cube::any_face()
 {
-	for(int i=1; i<7; i++) if(one_face(i)) return true;
+	for(int i=1; i<7; i++) if(one_face(i)) {
+		save_point = trail.size();
+		return true;
+	}
+	return false;
+}
+
+bool Cube::first_line(int f)
+{
+	f--;
+	if(face[f][0][0] == f+1 && face[f][0][1] == f+1 && face[f][0][2] == f+1)
+		return true;
 	return false;
 }
 
 
+bool Cube::second_line(int f)
+{
+	f--;
+	if(face[f][1][0] == f+1 && face[f][1][1] == f+1 && face[f][1][2] == f+1)
+		return true;
+	return false;
+}
 
 
+void Cube::random_spin() 
+{
+	static uniform_int_distribution<> df(1, 6);
+	static uniform_int_distribution<> dd(1, 3);
+	static random_device rd;
+	int d1, d2;
+	d1 = df(rd);
+	d2 = dd(rd);
+	trail.push(d1);
+	direc.push(d2);
+	for(int i=0; i<d2; i++) spin(d1);
+}
 
+void Cube::ai() {
+	bool step = false;
+	int face;
+	int dice;
+	while(!step) {
+		random_spin();
+		for(int f=1; f<7; f++) if(first_line(f)) {
+			save_point = trail.size();
+			face = f;
+			step = true;
+			cout << *this;
+		}
+	}
+	step = false;
+	for(int i=0; !step; i++) {
+		random_spin();
+		if(first_line(face) && second_line(face)) {
+			save_point = trail.size();
+			step = true;
+			cout << *this;
+		} else if(i == 100) {
+			i = 0;
+			while(trail.size() != save_point) {
+				int k = trail.top(); trail.pop();
+				int c = direc.top(); direc.pop();
+				for(int i=0; i<4-c; i++) spin(k);
+			}
+		}
+	}
+	step = false;
+	for(int i=0; !step; i++) {
+		random_spin();
+		if(one_face(face)) {
+			save_point = trail.size();
+			step = true;
+			cout << *this;
+		} else if(i == 100) {
+			i = 0;
+			while(trail.size() != save_point) {
+				int k = trail.top(); trail.pop();
+				int c = direc.top(); direc.pop();
+				for(int i=0; i<4-c; i++) spin(k);
+			}
+		}
+	}
+}
