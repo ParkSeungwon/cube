@@ -116,6 +116,14 @@ void Cube::random_spin()
 	for(int i=0; i<d2; i++) spin(d1);
 }
 
+void Cube::rewind() {
+	while(trail.size() != save_point) {
+		int k = trail.top(); trail.pop();
+		int c = direc.top(); direc.pop();
+		for(int i=0; i<4-c; i++) spin(k);
+	}
+}
+
 void Cube::ai() {
 	bool step = false;
 	int face;
@@ -138,11 +146,7 @@ void Cube::ai() {
 			cout << *this;
 		} else if(i == 100) {
 			i = 0;
-			while(trail.size() != save_point) {
-				int k = trail.top(); trail.pop();
-				int c = direc.top(); direc.pop();
-				for(int i=0; i<4-c; i++) spin(k);
-			}
+			rewind();
 		}
 	}
 	step = false;
@@ -154,11 +158,29 @@ void Cube::ai() {
 			cout << *this;
 		} else if(i == 100) {
 			i = 0;
-			while(trail.size() != save_point) {
-				int k = trail.top(); trail.pop();
-				int c = direc.top(); direc.pop();
-				for(int i=0; i<4-c; i++) spin(k);
+			rewind();
+		}
+	}
+	step = false;
+	const int* p;
+	for(int i=0; !step; i++) {
+		random_spin();
+		if(one_face(face)) {
+			p = &cube_order[0][0][0] + 36 * (face - 1);//set to current edge
+			for(int j=0; j<4; j++) {
+				if(this->face[*p++][*p++][*p++] ==  
+						this->face[*p][*p][*p] && 
+						this->face[*p++][*p++][*p++]
+						== this->face[*p++][*p++][*p++]) {
+					save_point = trail.size();
+					step = true;
+					cout << *this;
+				}
 			}
+		}
+		if(i == 100) {
+			i = 0;
+			rewind();
 		}
 	}
 }

@@ -19,6 +19,7 @@ private:
 	std::stack<int> direc;
 	int save_point;
 	void random_spin();
+	void rewind();
 };
 
 std::ostream& operator<<(std::ostream& o, const Cube& r);
